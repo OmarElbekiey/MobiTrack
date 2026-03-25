@@ -1,0 +1,9 @@
+node_modules/
+*.apk
+*.apk.idsig
+android/app/build/
+android/.gradle/
+android/build/
+android/app/.cxx/
+android/local.properties
+.gradle/

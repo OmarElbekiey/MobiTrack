@@ -1,0 +1,12 @@
+{
+  "appId": "com.mobitrack.app",
+  "appName": "MobiTrack",
+  "webDir": "www",
+  "bundledWebRuntime": false,
+  "android": {
+    "backgroundColor": "#0a0e1a"
+  },
+  "server": {
+    "androidScheme": "https"
+  }
+}
