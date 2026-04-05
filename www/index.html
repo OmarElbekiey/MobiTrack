@@ -764,8 +764,18 @@ function save(){
 }
 
 async function saveDB(){
-  await _db.execute({database:'mobitrack',statements:'DELETE FROM purchases;DELETE FROM sales;DELETE FROM expenses;DELETE FROM settlements;DELETE FROM settings;DELETE FROM opening_stock;DELETE FROM opening_debts;',transaction:true});
+  // All deletes and inserts in a single atomic transaction.
+  // Previously the DELETE and INSERT were two separate calls — if a crash
+  // occurred between them the database would be left empty.
   var set=[];
+  // Deletes first (inside the same transaction as the inserts below)
+  set.push({statement:'DELETE FROM purchases',values:[]});
+  set.push({statement:'DELETE FROM sales',values:[]});
+  set.push({statement:'DELETE FROM expenses',values:[]});
+  set.push({statement:'DELETE FROM settlements',values:[]});
+  set.push({statement:'DELETE FROM settings',values:[]});
+  set.push({statement:'DELETE FROM opening_stock',values:[]});
+  set.push({statement:'DELETE FROM opening_debts',values:[]});
   D.purchases.forEach(function(p){
     set.push({statement:'INSERT INTO purchases VALUES(?,?,?,?,?,?,?,?,?,?)',values:[p.id,p.date,p.brand||'',p.model,p.qty,p.unitPrice,p.supplier||'',p.payment,p.notes||'',JSON.stringify(p.serials||[])]});
   });
@@ -778,19 +788,16 @@ async function saveDB(){
   D.settlements.forEach(function(st){
     set.push({statement:'INSERT INTO settlements VALUES(?,?,?,?,?,?,?)',values:[st.id,st.date,st.name,st.type,st.amount,st.payment,st.notes||'']});
   });
-  // Settings
   Object.entries(D.settings||{}).forEach(function(kv){
     set.push({statement:'INSERT INTO settings VALUES(?,?)',values:[kv[0],String(kv[1])]});
   });
-  // Opening stock
   (D.openingStock||[]).forEach(function(o){
     set.push({statement:'INSERT INTO opening_stock VALUES(?,?,?,?,?)',values:[o.id,o.model,o.brand||'',o.qty,o.avgCost]});
   });
-  // Opening debts
   (D.openingDebts||[]).forEach(function(o){
     set.push({statement:'INSERT INTO opening_debts VALUES(?,?,?,?,?)',values:[o.id,o.name,o.type,o.amount,o.notes||'']});
   });
-  if(set.length>0) await _db.executeSet({database:'mobitrack',set:set});
+  await _db.executeSet({database:'mobitrack',set:set,transaction:true});
 }
 function fmt(n){return Number(n||0).toLocaleString('ar-EG',{minimumFractionDigits:0,maximumFractionDigits:0});}
 function today(){return new Date().toISOString().slice(0,10);}
