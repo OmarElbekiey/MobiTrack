@@ -220,59 +220,86 @@ input:focus,select:focus{border-color:var(--ac);}select option{background:var(--
 </div>
 
 <div id="page-purchases" class="page">
-  <div class="ph"><div><h2>&#128717; المشتريات</h2><p>المتوسط المرجح يتحسب تلقائياً</p></div></div>
+  <div class="ph"><div><h2>&#128717; المشتريات</h2><p>يمكنك إضافة موبايلات من ماركات وموديلات مختلفة في دفعة واحدة</p></div></div>
   <div class="card" style="margin-bottom:18px;">
     <h3 style="font-size:14px;font-weight:800;margin-bottom:13px;">&#10133; إضافة دفعة شراء</h3>
-    <div class="ai">&#128161; شراء نفس الموبايل بأسعار مختلفة = متوسط مرجح تلقائي</div>
+
+    <!-- PHONE ITEM ENTRY -->
+    <div style="background:var(--sf2);border:1px solid var(--br);border-radius:9px;padding:12px;margin-bottom:12px;">
+      <div style="font-size:11px;font-weight:700;color:var(--mu);margin-bottom:8px;letter-spacing:.5px;">&#128241; أضف موبايل للقائمة</div>
+      <div class="fg">
+        <div class="fm"><label>الماركة</label><select id="pur-brand" onchange="onBrandChange('pur-brand','pur-brand-custom');refreshModelsDL(getBrand('pur-brand','pur-brand-custom'))"><option value="">اختر</option><option>Samsung</option><option>iPhone</option><option>Xiaomi</option><option>OPPO</option><option>Vivo</option><option>Realme</option><option>Tecno</option><option>Infinix</option><option>Nokia</option><option>أخرى</option></select><input id="pur-brand-custom" placeholder="اكتب اسم الماركة" style="display:none;margin-top:6px;" oninput="refreshModelsDL(this.value)"></div>
+        <div class="fm"><label>الموديل</label><input id="pur-model" placeholder="Samsung A55" list="models-dl" oninput="purModelInfo();purPrev()"></div>
+        <div class="fm"><label>الكمية</label><input id="pur-qty" type="number" min="1" placeholder="عدد" oninput="purPrev()"></div>
+        <div class="fm"><label>سعر الوحدة (ج)</label><input id="pur-price" type="number" min="0" placeholder="0" oninput="purPrev()"></div>
+        <div id="pur-model-info" style="display:none;grid-column:1/-1;background:var(--sf3);border:1px solid var(--br);border-radius:9px;padding:10px 14px;font-size:12px;line-height:1.9;"></div>
+        <div class="fm" style="grid-column:1/-1;">
+          <label>&#128290; السيريال نمبر / IMEI — ادخل كل رقم في سطر (اختياري)</label>
+          <textarea id="pur-serials" placeholder="351234567890123&#10;351234567890124&#10;351234567890125" style="background:var(--sf3);border:1px solid var(--br);border-radius:8px;padding:9px 12px;color:var(--tx);font-family:monospace;font-size:13px;outline:none;width:100%;min-height:60px;resize:vertical;direction:ltr;" oninput="updateSerialCount()"></textarea>
+          <div id="serial-count-info" style="font-size:11px;color:var(--su);margin-top:4px;"></div>
+        </div>
+      </div>
+      <div id="pur-prev" class="ib" style="display:none;margin-top:8px;"></div>
+      <button class="btn bsm" style="background:var(--ac2);color:#000;margin-top:10px;width:100%;font-weight:800;" onclick="addPurItem()">&#10133; إضافة للقائمة</button>
+    </div>
+
+    <!-- ITEMS LIST -->
+    <div id="pur-items-wrap" style="display:none;margin-bottom:12px;">
+      <div id="pur-items-list"></div>
+    </div>
+
+    <!-- TRANSACTION DETAILS -->
     <div class="fg">
-      <div class="fm"><label>الماركة</label><select id="pur-brand" onchange="onBrandChange('pur-brand','pur-brand-custom');refreshModelsDL(getBrand('pur-brand','pur-brand-custom'))"><option value="">اختر</option><option>Samsung</option><option>iPhone</option><option>Xiaomi</option><option>OPPO</option><option>Vivo</option><option>Realme</option><option>Tecno</option><option>Infinix</option><option>Nokia</option><option>أخرى</option></select><input id="pur-brand-custom" placeholder="اكتب اسم الماركة" style="display:none;margin-top:6px;" oninput="refreshModelsDL(this.value)"></div>
-      <div class="fm"><label>الموديل</label><input id="pur-model" placeholder="Samsung A55" list="models-dl" oninput="purModelInfo();purPrev()"></div>
-      <div class="fm"><label>الكمية</label><input id="pur-qty" type="number" min="1" placeholder="عدد" oninput="purPrev()"></div>
-      <div class="fm"><label>سعر الوحدة (ج)</label><input id="pur-price" type="number" min="0" placeholder="0" oninput="purPrev()"></div>
       <div class="fm"><label>المورد</label><input id="pur-sup" list="sup-dl" placeholder="اسم المورد"><datalist id="sup-dl"></datalist></div>
-      <div id="pur-model-info" style="display:none;grid-column:1/-1;background:var(--sf2);border:1px solid var(--br);border-radius:9px;padding:10px 14px;font-size:12px;line-height:1.9;"></div>
       <div class="fm"><label>التاريخ</label><input id="pur-date" type="date"></div>
       <div class="fm" style="grid-column:1/-1;"><label>&#128179; طرق الدفع (يمكن تقسيم المبلغ)</label><div id="pur-pay-rows" style="margin-top:6px;"></div><div style="display:flex;align-items:center;gap:10px;margin-top:6px;"><button type="button" class="btn bsm" style="background:var(--sf3);color:var(--ac);" onclick="addPayRow('pur')">+ إضافة طريقة</button><span id="pur-pay-rem" style="font-size:12px;"></span></div></div>
       <div class="fm"><label>ملاحظات</label><input id="pur-notes" placeholder="اختياري"></div>
-      <div class="fm" style="grid-column:1/-1;">
-        <label>&#128290; السيريال نمبر / IMEI — ادخل كل رقم في سطر لو أكتر من حبة (اختياري)</label>
-        <textarea id="pur-serials" placeholder="351234567890123&#10;351234567890124&#10;351234567890125" style="background:var(--sf2);border:1px solid var(--br);border-radius:8px;padding:9px 12px;color:var(--tx);font-family:monospace;font-size:13px;outline:none;width:100%;min-height:72px;resize:vertical;direction:ltr;" oninput="updateSerialCount()"></textarea>
-        <div id="serial-count-info" style="font-size:11px;color:var(--su);margin-top:4px;"></div>
-      </div>
     </div>
-
-    <div id="pur-prev" class="ib" style="display:none;"></div>
     <button class="btn bp" onclick="addPurchase()" style="margin-top:13px;">&#128717; تسجيل الشراء</button>
   </div>
   <div class="tw"><div class="th"><h3>سجل المشتريات</h3></div>
-    <table><thead><tr><th>التاريخ</th><th>الموبايل</th><th>المورد</th><th>الكمية</th><th>سعر الوحدة</th><th>الإجمالي</th><th>الدفع</th><th>متوسط التكلفة</th></tr></thead>
+    <table><thead><tr><th>التاريخ</th><th>الموبايل</th><th>المورد</th><th>الكمية</th><th>الإجمالي</th><th>الدفع</th><th>متوسط التكلفة</th></tr></thead>
     <tbody id="pur-tb"></tbody></table></div>
 </div>
 <div id="page-sales" class="page">
-  <div class="ph"><div><h2>&#128176; المبيعات</h2><p>سجل كل بيعة وشوف ربحها فوراً</p></div></div>
+  <div class="ph"><div><h2>&#128176; المبيعات</h2><p>يمكنك بيع موبايلات من ماركات وموديلات مختلفة في صفقة واحدة</p></div></div>
   <div class="card" style="margin-bottom:18px;">
     <h3 style="font-size:14px;font-weight:800;margin-bottom:13px;">&#10133; تسجيل بيعة جديدة</h3>
-    <div class="fg">
-      <div class="fm"><label>&#127344; البراند</label><select id="sal-brand" onchange="salBrandChanged()"><option value="">كل البراندات</option></select></div>
-      <div class="fm"><label>&#128241; الموبايل</label><select id="sal-prod" onchange="salModelChanged()"><option value="">اختر الموديل</option></select></div>
 
-      <div class="fm"><label>الكمية</label><input id="sal-qty" type="number" min="1" placeholder="كم حبة؟" oninput="salPrev()"></div>
-      <div class="fm"><label>سعر البيع للوحدة (ج)</label><input id="sal-price" type="number" min="0" placeholder="0" oninput="salPrev()"></div>
+    <!-- PHONE ITEM ENTRY -->
+    <div style="background:var(--sf2);border:1px solid var(--br);border-radius:9px;padding:12px;margin-bottom:12px;">
+      <div style="font-size:11px;font-weight:700;color:var(--mu);margin-bottom:8px;letter-spacing:.5px;">&#128241; أضف موبايل للقائمة</div>
+      <div class="fg">
+        <div class="fm"><label>&#127344; البراند</label><select id="sal-brand" onchange="salBrandChanged()"><option value="">كل البراندات</option></select></div>
+        <div class="fm"><label>&#128241; الموبايل</label><select id="sal-prod" onchange="salModelChanged()"><option value="">اختر الموديل</option></select></div>
+        <div class="fm"><label>الكمية</label><input id="sal-qty" type="number" min="1" placeholder="كم حبة؟" oninput="salPrev()"></div>
+        <div class="fm"><label>سعر البيع للوحدة (ج)</label><input id="sal-price" type="number" min="0" placeholder="0" oninput="salPrev()"></div>
+        <div id="sal-model-info" style="display:none;grid-column:1/-1;background:var(--sf3);border:1px solid var(--br);border-radius:9px;padding:10px 14px;font-size:12px;line-height:1.9;"></div>
+        <div class="fm" id="sal-serial-wrap" style="display:none;grid-column:1/-1;">
+          <label>&#128290; اختار السيريالات اللي هتبيعها</label>
+          <div id="sal-serial-boxes" style="background:var(--sf3);border:1px solid var(--br);border-radius:8px;padding:10px 14px;max-height:160px;overflow-y:auto;display:flex;flex-wrap:wrap;gap:8px;"></div>
+          <div id="sal-serial-info" style="font-size:11px;color:var(--su);margin-top:4px;"></div>
+        </div>
+      </div>
+      <div id="sal-prev" class="ib" style="display:none;margin-top:8px;"></div>
+      <button class="btn bsm" style="background:var(--ac2);color:#000;margin-top:10px;width:100%;font-weight:800;" onclick="addSalItem()">&#10133; إضافة للقائمة</button>
+    </div>
+
+    <!-- ITEMS LIST -->
+    <div id="sal-items-wrap" style="display:none;margin-bottom:12px;">
+      <div id="sal-items-list"></div>
+    </div>
+
+    <!-- TRANSACTION DETAILS -->
+    <div class="fg">
       <div class="fm"><label>اسم التاجر / العميل</label><input id="sal-cust" list="cust-dl" placeholder="اكتب أو اختر"><datalist id="cust-dl"></datalist></div>
-      <div id="sal-model-info" style="display:none;grid-column:1/-1;background:var(--sf2);border:1px solid var(--br);border-radius:9px;padding:10px 14px;font-size:12px;line-height:1.9;"></div>
       <div class="fm"><label>التاريخ</label><input id="sal-date" type="date"></div>
       <div class="fm" style="grid-column:1/-1;"><label>&#128179; طرق الدفع (يمكن تقسيم المبلغ)</label><div id="sal-pay-rows" style="margin-top:6px;"></div><div style="display:flex;align-items:center;gap:10px;margin-top:6px;"><button type="button" class="btn bsm" style="background:var(--sf3);color:var(--ac);" onclick="addPayRow('sal')">+ إضافة طريقة</button><span id="sal-pay-rem" style="font-size:12px;"></span></div></div>
-      <div class="fm" id="sal-serial-wrap" style="display:none;grid-column:1/-1;">
-        <label>&#128290; اختار السيريالات اللي هتبيعها</label>
-        <div id="sal-serial-boxes" style="background:var(--sf2);border:1px solid var(--br);border-radius:8px;padding:10px 14px;max-height:160px;overflow-y:auto;display:flex;flex-wrap:wrap;gap:8px;"></div>
-        <div id="sal-serial-info" style="font-size:11px;color:var(--su);margin-top:4px;"></div>
-      </div>
     </div>
-    <div id="sal-prev" class="ib" style="display:none;"></div>
     <button class="btn bs" onclick="addSale()" style="margin-top:13px;">&#128176; تسجيل البيعة</button>
   </div>
   <div class="tw"><div class="th"><h3>سجل المبيعات</h3></div>
-    <table><thead><tr><th>التاريخ</th><th>الموبايل</th><th>التاجر/العميل</th><th>الكمية</th><th>سعر البيع</th><th>التكلفة</th><th>الربح</th><th>الدفع</th></tr></thead>
+    <table><thead><tr><th>التاريخ</th><th>الموبايل</th><th>التاجر/العميل</th><th>الكمية</th><th>إجمالي البيع</th><th>الربح</th><th>الدفع</th></tr></thead>
     <tbody id="sal-tb"></tbody></table></div>
 </div>
 <div id="page-expenses" class="page">
@@ -836,21 +863,28 @@ function rebuildStock(){
     st.brand=o.brand||st.brand;
   });
   D.purchases.forEach(function(p){
-    if(!s[p.model]) s[p.model]={brand:p.brand||'',qty:0,avgCost:0,serials:[]};
-    var st=s[p.model];
-    st.avgCost=((st.avgCost*st.qty)+(p.unitPrice*p.qty))/(st.qty+p.qty);
-    st.qty+=p.qty;
-    st.brand=p.brand||st.brand;
-    (p.serials||[]).forEach(function(sr){if(sr&&st.serials.indexOf(sr)<0)st.serials.push(sr);});
+    var items=(p.items&&p.items.length)?p.items:[{brand:p.brand,model:p.model,qty:p.qty,unitPrice:p.unitPrice,serials:p.serials||[]}];
+    items.forEach(function(item){
+      if(!item.model||!item.qty) return;
+      if(!s[item.model]) s[item.model]={brand:item.brand||'',qty:0,avgCost:0,serials:[]};
+      var st=s[item.model];
+      st.avgCost=((st.avgCost*st.qty)+(item.unitPrice*item.qty))/(st.qty+item.qty);
+      st.qty+=item.qty;
+      st.brand=item.brand||st.brand;
+      (item.serials||[]).forEach(function(sr){if(sr&&st.serials.indexOf(sr)<0)st.serials.push(sr);});
+    });
   });
   D.sales.forEach(function(sl){
-    if(s[sl.model]){
-      s[sl.model].qty=Math.max(0,s[sl.model].qty-sl.qty);
-      (sl.serials||[]).forEach(function(sr){
-        var idx=s[sl.model].serials.indexOf(sr);
-        if(idx>=0) s[sl.model].serials.splice(idx,1);
-      });
-    }
+    var items=(sl.items&&sl.items.length)?sl.items:[{model:sl.model,qty:sl.qty,serials:sl.serials||[]}];
+    items.forEach(function(item){
+      if(s[item.model]){
+        s[item.model].qty=Math.max(0,s[item.model].qty-item.qty);
+        (item.serials||[]).forEach(function(sr){
+          var idx=s[item.model].serials.indexOf(sr);
+          if(idx>=0) s[item.model].serials.splice(idx,1);
+        });
+      }
+    });
   });
   D.stock=s;
 }
@@ -863,18 +897,20 @@ async function initDB(){
     await sqlite.open({database:'mobitrack'});
     _db=sqlite;
     await _db.execute({database:'mobitrack',statements:[
-      'CREATE TABLE IF NOT EXISTS purchases (id INTEGER PRIMARY KEY, date TEXT, brand TEXT, model TEXT, qty INTEGER, unitPrice REAL, supplier TEXT, payment TEXT, notes TEXT, serials TEXT DEFAULT "[]", payments TEXT DEFAULT "[]");',
-      'CREATE TABLE IF NOT EXISTS sales (id INTEGER PRIMARY KEY, date TEXT, model TEXT, qty INTEGER, salePrice REAL, costPerUnit REAL, customer TEXT, payment TEXT, serials TEXT DEFAULT "[]", payments TEXT DEFAULT "[]");',
+      'CREATE TABLE IF NOT EXISTS purchases (id INTEGER PRIMARY KEY, date TEXT, brand TEXT, model TEXT, qty INTEGER, unitPrice REAL, supplier TEXT, payment TEXT, notes TEXT, serials TEXT DEFAULT "[]", payments TEXT DEFAULT "[]", items TEXT DEFAULT "null");',
+      'CREATE TABLE IF NOT EXISTS sales (id INTEGER PRIMARY KEY, date TEXT, model TEXT, qty INTEGER, salePrice REAL, costPerUnit REAL, customer TEXT, payment TEXT, serials TEXT DEFAULT "[]", payments TEXT DEFAULT "[]", items TEXT DEFAULT "null");',
       'CREATE TABLE IF NOT EXISTS expenses (id INTEGER PRIMARY KEY, date TEXT, category TEXT, desc TEXT, amount REAL, payment TEXT);',
       'CREATE TABLE IF NOT EXISTS settlements (id INTEGER PRIMARY KEY, date TEXT, name TEXT, type TEXT, amount REAL, payment TEXT, notes TEXT);',
       'CREATE TABLE IF NOT EXISTS settings (key TEXT PRIMARY KEY, value TEXT);',
       'CREATE TABLE IF NOT EXISTS opening_stock (id INTEGER PRIMARY KEY, model TEXT, brand TEXT, qty INTEGER, avgCost REAL);',
       'CREATE TABLE IF NOT EXISTS opening_debts (id INTEGER PRIMARY KEY, name TEXT, type TEXT, amount REAL, notes TEXT);'
     ].join('\n'),transaction:false});
-    // Safe migration: add serials column to sales if upgrading from old schema
+    // Safe migration: add columns when upgrading from old schema
     try{await _db.execute({database:'mobitrack',statements:'ALTER TABLE sales ADD COLUMN serials TEXT DEFAULT "[]"',transaction:false});}catch(e){}
     try{await _db.execute({database:'mobitrack',statements:'ALTER TABLE purchases ADD COLUMN payments TEXT DEFAULT "[]"',transaction:false});}catch(e){}
     try{await _db.execute({database:'mobitrack',statements:'ALTER TABLE sales ADD COLUMN payments TEXT DEFAULT "[]"',transaction:false});}catch(e){}
+    try{await _db.execute({database:'mobitrack',statements:'ALTER TABLE purchases ADD COLUMN items TEXT DEFAULT "null"',transaction:false});}catch(e){}
+    try{await _db.execute({database:'mobitrack',statements:'ALTER TABLE sales ADD COLUMN items TEXT DEFAULT "null"',transaction:false});}catch(e){}
     await loadFromDB();
     // Split-brain check: if SQLite is empty but localStorage has data, offer recovery
     var _dbTot=(D.purchases||[]).length+(D.sales||[]).length+(D.expenses||[]).length;
@@ -894,7 +930,8 @@ async function initDB(){
     try{var _s=localStorage.getItem('mb_v5');if(_s){D=JSON.parse(_s);if(!D.settlements)D.settlements=[];if(!D.settings)D.settings={shopName:'',openingCash:0,openingInstapay:0,openingVoda:0};
     if(D.settings.openingInstapay===undefined)D.settings.openingInstapay=0;
     if(D.settings.openingVoda===undefined)D.settings.openingVoda=0;if(!D.openingStock)D.openingStock=[];if(!D.openingDebts)D.openingDebts=[];
-    D.purchases.forEach(function(p){if(!p.payments)p.payments=[];});D.sales.forEach(function(s){if(!s.payments)s.payments=[];});}}catch(ex){}
+    D.purchases.forEach(function(p){if(!p.payments)p.payments=[];if(p.items===undefined)p.items=null;});
+    D.sales.forEach(function(s){if(!s.payments)s.payments=[];if(s.items===undefined)s.items=null;});}}catch(ex){}
     rebuildStock();
     _dbReady=true;
   }
@@ -904,9 +941,9 @@ async function initDB(){
 async function loadFromDB(){
   var r;
   r=await _db.query({database:'mobitrack',statement:'SELECT * FROM purchases ORDER BY id DESC',values:[]});
-  D.purchases=(r.values||[]).map(function(x){x.serials=x.serials?JSON.parse(x.serials):[];x.payments=x.payments?JSON.parse(x.payments):[];return x;});
+  D.purchases=(r.values||[]).map(function(x){x.serials=x.serials?JSON.parse(x.serials):[];x.payments=x.payments?JSON.parse(x.payments):[];x.items=(x.items&&x.items!=='null')?JSON.parse(x.items):null;return x;});
   r=await _db.query({database:'mobitrack',statement:'SELECT * FROM sales ORDER BY id DESC',values:[]});
-  D.sales=(r.values||[]).map(function(x){x.serials=x.serials?JSON.parse(x.serials):[];x.payments=x.payments?JSON.parse(x.payments):[];return x;});
+  D.sales=(r.values||[]).map(function(x){x.serials=x.serials?JSON.parse(x.serials):[];x.payments=x.payments?JSON.parse(x.payments):[];x.items=(x.items&&x.items!=='null')?JSON.parse(x.items):null;return x;});
   r=await _db.query({database:'mobitrack',statement:'SELECT * FROM expenses ORDER BY id DESC',values:[]});
   D.expenses=r.values||[];
   r=await _db.query({database:'mobitrack',statement:'SELECT * FROM settlements ORDER BY id DESC',values:[]});
@@ -948,10 +985,10 @@ async function saveDB(){
   set.push({statement:'DELETE FROM opening_stock',values:[]});
   set.push({statement:'DELETE FROM opening_debts',values:[]});
   D.purchases.forEach(function(p){
-    set.push({statement:'INSERT INTO purchases VALUES(?,?,?,?,?,?,?,?,?,?,?)',values:[p.id,p.date,p.brand||'',p.model,p.qty,p.unitPrice,p.supplier||'',p.payment,p.notes||'',JSON.stringify(p.serials||[]),JSON.stringify(p.payments||[])]});
+    set.push({statement:'INSERT INTO purchases (id,date,brand,model,qty,unitPrice,supplier,payment,notes,serials,payments,items) VALUES(?,?,?,?,?,?,?,?,?,?,?,?)',values:[p.id,p.date,p.brand||'',p.model,p.qty,p.unitPrice,p.supplier||'',p.payment,p.notes||'',JSON.stringify(p.serials||[]),JSON.stringify(p.payments||[]),p.items?JSON.stringify(p.items):'null']});
   });
   D.sales.forEach(function(s){
-    set.push({statement:'INSERT INTO sales VALUES(?,?,?,?,?,?,?,?,?,?)',values:[s.id,s.date,s.model,s.qty,s.salePrice,s.costPerUnit||0,s.customer||'',s.payment,JSON.stringify(s.serials||[]),JSON.stringify(s.payments||[])]});
+    set.push({statement:'INSERT INTO sales (id,date,model,qty,salePrice,costPerUnit,customer,payment,serials,payments,items) VALUES(?,?,?,?,?,?,?,?,?,?,?)',values:[s.id,s.date,s.model,s.qty,s.salePrice,s.costPerUnit||0,s.customer||'',s.payment,JSON.stringify(s.serials||[]),JSON.stringify(s.payments||[]),s.items?JSON.stringify(s.items):'null']});
   });
   D.expenses.forEach(function(ex){
     set.push({statement:'INSERT INTO expenses VALUES(?,?,?,?,?,?)',values:[ex.id,ex.date,ex.category,ex.desc,ex.amount,ex.payment]});
@@ -990,23 +1027,39 @@ function nav(name,el){
 }
 function openModal(id){document.getElementById(id).classList.add('open');}
 function closeModal(id){document.getElementById(id).classList.remove('open');}
+function _getPurItemsForModel(model){
+  var items=[];
+  D.purchases.forEach(function(p){
+    if(p.items&&p.items.length){p.items.filter(function(i){return i.model===model;}).forEach(function(i){items.push({unitPrice:i.unitPrice,qty:i.qty,date:p.date});});}
+    else if(p.model===model){items.push({unitPrice:p.unitPrice,qty:p.qty,date:p.date});}
+  });
+  return items;
+}
+function _getSalItemsForModel(model){
+  var items=[];
+  D.sales.forEach(function(s){
+    if(s.items&&s.items.length){s.items.filter(function(i){return i.model===model;}).forEach(function(i){items.push({salePrice:i.salePrice,qty:i.qty,date:s.date});});}
+    else if(s.model===model){items.push({salePrice:s.salePrice,qty:s.qty,date:s.date});}
+  });
+  return items;
+}
 function purModelInfo(){
   var model=document.getElementById('pur-model').value.trim();
   var el=document.getElementById('pur-model-info');
   if(!el) return;
   if(!model){el.style.display='none';return;}
-  var purHist=D.purchases.filter(function(p){return p.model===model;});
-  var salHist=D.sales.filter(function(s){return s.model===model;});
+  var purHist=_getPurItemsForModel(model);
+  var salHist=_getSalItemsForModel(model);
   if(!purHist.length&&!salHist.length){el.style.display='none';return;}
   var lines=[];
   if(purHist.length){
     var avgBuy=purHist.reduce(function(a,p){return a+p.unitPrice*p.qty;},0)/purHist.reduce(function(a,p){return a+p.qty;},0);
-    var lastBuy=purHist.sort(function(a,b){return b.date.localeCompare(a.date);})[0].unitPrice;
+    var lastBuy=purHist.slice().sort(function(a,b){return b.date.localeCompare(a.date);})[0].unitPrice;
     lines.push('&#128717; <b>شراء:</b> متوسط <b style="color:var(--ac)">'+fmt(avgBuy)+' ج</b> | آخر سعر <b style="color:var(--ac2)">'+fmt(lastBuy)+' ج</b>');
   }
   if(salHist.length){
     var avgSel=salHist.reduce(function(a,s){return a+s.salePrice*s.qty;},0)/salHist.reduce(function(a,s){return a+s.qty;},0);
-    var lastSel=salHist.sort(function(a,b){return b.date.localeCompare(a.date);})[0].salePrice;
+    var lastSel=salHist.slice().sort(function(a,b){return b.date.localeCompare(a.date);})[0].salePrice;
     lines.push('&#128176; <b>بيع:</b> متوسط <b style="color:var(--su)">'+fmt(avgSel)+' ج</b> | آخر سعر <b style="color:var(--ac2)">'+fmt(lastSel)+' ج</b>');
   }
   el.innerHTML=lines.join('<br>');
@@ -1017,16 +1070,18 @@ function purPrev(){
   var qty=parseFloat(document.getElementById('pur-qty').value)||0;
   var price=parseFloat(document.getElementById('pur-price').value)||0;
   var el=document.getElementById('pur-prev');
-  // Auto-update single payment row with total
-  var total=qty*price;
-  var c=document.getElementById('pur-pay-rows');
-  if(c&&c.children.length===1&&total>0){var inp=c.querySelector('input[type=number]');if(inp)inp.value=total;}
-  _cPR('pur');
-  if(!model||!qty||!price){el.style.display='none';_cPR('pur');return;}
+  // Only auto-update payment row when no items in list yet
+  if(!_purItems.length){
+    var itemTotal=qty*price;
+    var c=document.getElementById('pur-pay-rows');
+    if(c&&c.children.length===1&&itemTotal>0){var inp=c.querySelector('input[type=number]');if(inp)inp.value=itemTotal;}
+    _cPR('pur');
+  }
+  if(!model||!qty||!price){el.style.display='none';return;}
   var s=D.stock[model];
   if(s&&s.qty>0){var na=((s.avgCost*s.qty)+(price*qty))/(s.qty+qty);el.innerHTML='&#128260; <b>متوسط بعد الدفعة:</b> '+fmt(s.avgCost)+' ج &times; '+s.qty+' + '+fmt(price)+' ج &times; '+qty+' = <b>'+fmt(na)+' ج/موبايل</b> ('+( s.qty+qty)+' إجمالي)';}
   else{el.innerHTML='&#9989; أول دفعة لـ <b>'+model+'</b>: '+fmt(price)+' ج &times; '+qty+' = '+fmt(price*qty)+' ج';}
-  el.style.display='block'; _cPR('pur');
+  el.style.display='block';
 }
 
 // ── Brand helpers ──────────────────────────────
@@ -1058,10 +1113,14 @@ function refreshModelsDL(brand){
   var dl=document.getElementById('models-dl');
   if(!dl) return;
   var src=(D.purchases||[]).slice().sort(function(a,b){return b.date.localeCompare(a.date);});
-  if(brand&&brand!=='أخرى') src=src.filter(function(p){return p.brand===brand;});
   var seen={},models=[];
-  src.forEach(function(p){if(p.model&&!seen[p.model]){seen[p.model]=1;models.push(p.model);}});
-  // If no brand or not enough, also add opening stock models
+  src.forEach(function(p){
+    var items=(p.items&&p.items.length)?p.items:[{model:p.model,brand:p.brand}];
+    items.forEach(function(item){
+      if(brand&&brand!=='أخرى'&&item.brand!==brand) return;
+      if(item.model&&!seen[item.model]){seen[item.model]=1;models.push(item.model);}
+    });
+  });
   if(!brand){
     (D.openingStock||[]).forEach(function(o){if(o.model&&!seen[o.model]){seen[o.model]=1;models.push(o.model);}});
   }
@@ -1078,34 +1137,161 @@ function addPayRow(pfx){
   _addPR(pfx,'نقدي',rem||0);
 }
 function _addPR(pfx,method,amt){var c=document.getElementById(pfx+'-pay-rows');var i=c.children.length;var d=document.createElement('div');d.style.cssText='display:flex;gap:6px;align-items:center;margin-bottom:5px;';d.innerHTML='<select style="flex:1;'+_PS+'" onchange="_cPR(\''+pfx+'\')">'+_PM.map(function(m){return '<option value="'+m+'"'+(m===method?' selected':'')+'>'+m+'</option>';}).join('')+'</select><input type="number" min="0" placeholder="المبلغ" value="'+(amt||'')+'" style="width:115px;'+_PS+'" oninput="_cPR(\''+pfx+'\')">'+(i>0?'<button type="button" style="background:var(--re);border:none;color:#fff;border-radius:7px;width:30px;height:30px;cursor:pointer;font-size:16px;line-height:1;flex-shrink:0;" onclick="this.parentElement.remove();_cPR(\''+pfx+'\')">&#10005;</button>':'<span style="width:30px;flex-shrink:0;"></span>');c.appendChild(d);}
-function _gExp(pfx){var q=parseFloat((document.getElementById(pfx+'-qty')||{value:0}).value)||0;var p=parseFloat((document.getElementById(pfx+'-price')||{value:0}).value)||0;return q*p;}
-function _cPR(pfx){var c=document.getElementById(pfx+'-pay-rows');if(!c)return;var paid=Array.from(c.querySelectorAll('input[type=number]')).reduce(function(a,i){return a+(parseFloat(i.value)||0);},0);var exp=_gExp(pfx);var el=document.getElementById(pfx+'-pay-rem');if(!el)return;if(!exp){el.textContent='';return;}var rem=exp-paid;if(Math.abs(rem)<0.01)el.innerHTML='<span style="color:var(--su);">&#9989; مكتمل</span>';else if(rem>0)el.innerHTML='<span style="color:var(--wa);">متبقي: '+fmt(rem)+' ج</span>';else el.innerHTML='<span style="color:var(--re);">&#9888;&#65039; زيادة: '+fmt(-rem)+' ج</span>';}
-function getPayRows(pfx){var c=document.getElementById(pfx+'-pay-rows');return Array.from(c.children).map(function(r){var s=r.querySelector('select'),i=r.querySelector('input[type=number]');return{method:s?s.value:'نقدي',amount:parseFloat(i?i.value:0)||0};}).filter(function(r){return r.amount>0;});}
-function addPurchase(){
+var _purItems=[];
+var _salItems=[];
+function _purTotal(){return _purItems.reduce(function(a,i){return a+i.qty*i.unitPrice;},0);}
+function _salTotal(){return _salItems.reduce(function(a,i){return a+i.qty*i.salePrice;},0);}
+function _gExp(pfx){
+  if(pfx==='pur'&&_purItems.length>0) return _purTotal();
+  if(pfx==='sal'&&_salItems.length>0) return _salTotal();
+  var q=parseFloat((document.getElementById(pfx+'-qty')||{value:0}).value)||0;var p=parseFloat((document.getElementById(pfx+'-price')||{value:0}).value)||0;return q*p;
+}
+function renderPurItems(){
+  var wrap=document.getElementById('pur-items-wrap');
+  var list=document.getElementById('pur-items-list');
+  if(!_purItems.length){if(wrap)wrap.style.display='none';return;}
+  if(wrap)wrap.style.display='block';
+  var total=_purTotal();
+  list.innerHTML='<table style="width:100%;border-collapse:collapse;font-size:13px;margin-bottom:6px;">'
+    +'<thead><tr style="background:var(--sf3);"><th style="padding:6px 8px;text-align:right;font-weight:700;">الموبايل</th><th style="padding:6px 8px;text-align:center;font-weight:700;">الكمية</th><th style="padding:6px 8px;text-align:center;font-weight:700;">السعر</th><th style="padding:6px 8px;text-align:center;font-weight:700;">الإجمالي</th><th style="padding:6px 8px;"></th></tr></thead>'
+    +'<tbody>'
+    +_purItems.map(function(item,idx){
+      return '<tr style="border-bottom:1px solid var(--br);">'
+        +'<td style="padding:7px 8px;"><b>'+item.model+'</b>'+(item.brand?' <span class="badge bbl">'+item.brand+'</span>':'')+(item.serials&&item.serials.length?' <small style="color:var(--mu);">('+item.serials.length+' IMEI)</small>':'')+'</td>'
+        +'<td style="padding:7px 8px;text-align:center;">'+item.qty+'</td>'
+        +'<td style="padding:7px 8px;text-align:center;">'+fmt(item.unitPrice)+' ج</td>'
+        +'<td style="padding:7px 8px;text-align:center;font-weight:700;color:var(--ac);">'+fmt(item.qty*item.unitPrice)+' ج</td>'
+        +'<td style="padding:7px 8px;text-align:center;"><button class="btn bd bsm" onclick="removePurItem('+idx+')" style="padding:2px 8px;min-width:0;">&#10005;</button></td>'
+        +'</tr>';
+    }).join('')
+    +'</tbody>'
+    +'<tfoot><tr style="background:var(--sf3);"><td colspan="3" style="padding:7px 10px;font-weight:700;color:var(--mu);">&#128722; إجمالي الدفعة ('+_purItems.length+' موديل)</td><td style="padding:7px 10px;text-align:center;font-weight:900;color:var(--ac2);font-size:15px;">'+fmt(total)+' ج</td><td></td></tr></tfoot>'
+    +'</table>';
+}
+function removePurItem(idx){
+  _purItems.splice(idx,1);
+  renderPurItems();
+  var total=_purTotal();
+  if(_purItems.length){var c=document.getElementById('pur-pay-rows');if(c&&c.children.length===1){var inp=c.querySelector('input[type=number]');if(inp)inp.value=total;}}
+  _cPR('pur');
+}
+function addPurItem(){
   var brand=getBrand('pur-brand','pur-brand-custom');
   var model=document.getElementById('pur-model').value.trim();
   var qty=parseInt(document.getElementById('pur-qty').value);
   var unitPrice=parseFloat(document.getElementById('pur-price').value);
+  var serialsRaw=(document.getElementById('pur-serials')||{value:''}).value;
+  var serials=serialsRaw.split('\n').map(function(l){return l.trim();}).filter(function(l){return l.length>0;});
+  if(!model||!qty||isNaN(qty)||!unitPrice||isNaN(unitPrice)){toast('&#9888;&#65039; ملأ الموديل والكمية والسعر!','var(--wa)');return;}
+  _purItems.push({brand:brand,model:model,qty:qty,unitPrice:unitPrice,serials:serials});
+  renderPurItems();
+  ['pur-qty','pur-price','pur-model'].forEach(function(id){document.getElementById(id).value='';});
+  setBrand('pur-brand','pur-brand-custom','');
+  var sta=document.getElementById('pur-serials');if(sta)sta.value='';
+  var sci=document.getElementById('serial-count-info');if(sci)sci.textContent='';
+  document.getElementById('pur-prev').style.display='none';
+  document.getElementById('pur-model-info').style.display='none';
+  var total=_purTotal();
+  var c=document.getElementById('pur-pay-rows');
+  if(c&&c.children.length===1){var inp=c.querySelector('input[type=number]');if(inp)inp.value=total;}
+  else initPayRows('pur',[{method:'نقدي',amount:total}],total);
+  _cPR('pur');
+}
+function renderSalItems(){
+  var wrap=document.getElementById('sal-items-wrap');
+  var list=document.getElementById('sal-items-list');
+  if(!_salItems.length){if(wrap)wrap.style.display='none';return;}
+  if(wrap)wrap.style.display='block';
+  var total=_salTotal();
+  var totalCost=_salItems.reduce(function(a,i){return a+i.costPerUnit*i.qty;},0);
+  var profit=total-totalCost;
+  list.innerHTML='<table style="width:100%;border-collapse:collapse;font-size:13px;margin-bottom:6px;">'
+    +'<thead><tr style="background:var(--sf3);"><th style="padding:6px 8px;text-align:right;font-weight:700;">الموبايل</th><th style="padding:6px 8px;text-align:center;font-weight:700;">الكمية</th><th style="padding:6px 8px;text-align:center;font-weight:700;">سعر البيع</th><th style="padding:6px 8px;text-align:center;font-weight:700;">الربح</th><th style="padding:6px 8px;"></th></tr></thead>'
+    +'<tbody>'
+    +_salItems.map(function(item,idx){
+      var rev=item.qty*item.salePrice,cost=item.qty*item.costPerUnit,pr=rev-cost;
+      return '<tr style="border-bottom:1px solid var(--br);">'
+        +'<td style="padding:7px 8px;"><b>'+item.model+'</b>'+(item.brand?' <span class="badge bbl">'+item.brand+'</span>':'')+(item.serials&&item.serials.length?' <small style="color:var(--mu);">('+item.serials.length+' IMEI)</small>':'')+'</td>'
+        +'<td style="padding:7px 8px;text-align:center;">'+item.qty+'</td>'
+        +'<td style="padding:7px 8px;text-align:center;font-weight:700;color:var(--ac);">'+fmt(rev)+' ج</td>'
+        +'<td style="padding:7px 8px;text-align:center;font-weight:700;" class="'+(pr>=0?'pos':'neg')+'">'+fmt(pr)+' ج</td>'
+        +'<td style="padding:7px 8px;text-align:center;"><button class="btn bd bsm" onclick="removeSalItem('+idx+')" style="padding:2px 8px;min-width:0;">&#10005;</button></td>'
+        +'</tr>';
+    }).join('')
+    +'</tbody>'
+    +'<tfoot><tr style="background:var(--sf3);"><td colspan="2" style="padding:7px 10px;font-weight:700;color:var(--mu);">&#128722; إجمالي ('+_salItems.length+' موديل) | ربح: <span class="'+(profit>=0?'pos':'neg')+'">'+fmt(profit)+' ج</span></td><td style="padding:7px 10px;text-align:center;font-weight:900;color:var(--ac2);font-size:15px;">'+fmt(total)+' ج</td><td></td><td></td></tr></tfoot>'
+    +'</table>';
+}
+function removeSalItem(idx){
+  _salItems.splice(idx,1);
+  renderSalItems();
+  var total=_salTotal();
+  if(_salItems.length){var c=document.getElementById('sal-pay-rows');if(c&&c.children.length===1){var inp=c.querySelector('input[type=number]');if(inp)inp.value=total;}}
+  _cPR('sal');
+}
+function addSalItem(){
+  var model=document.getElementById('sal-prod').value;
+  var qty=parseInt(document.getElementById('sal-qty').value);
+  var salePrice=parseFloat(document.getElementById('sal-price').value);
+  var boxes=document.getElementById('sal-serial-boxes');
+  var checkedSerials=boxes?Array.from(boxes.querySelectorAll('input[type=checkbox]:checked')).map(function(c){return c.value;})  :[];
+  if(!model||!qty||isNaN(qty)||!salePrice||isNaN(salePrice)){toast('&#9888;&#65039; ملأ بيانات البيعة!','var(--wa)');return;}
+  var s=D.stock[model];
+  var alreadyAlloc=_salItems.filter(function(i){return i.model===model;}).reduce(function(a,i){return a+i.qty;},0);
+  var avail=(s?s.qty:0)-alreadyAlloc;
+  if(!s||avail<qty){toast('&#9888;&#65039; مفيش كمية كافية! متاح: '+avail,'var(--wa)');return;}
+  if(checkedSerials.length>0&&checkedSerials.length!==qty){toast('&#9888;&#65039; عدد السيريالات ('+checkedSerials.length+') مش بيطابق الكمية ('+qty+')!','var(--wa)');return;}
+  _salItems.push({model:model,qty:qty,salePrice:salePrice,costPerUnit:s.avgCost,serials:checkedSerials,brand:s.brand||''});
+  renderSalItems();
+  document.getElementById('sal-qty').value='';
+  document.getElementById('sal-price').value='';
+  var sb=document.getElementById('sal-brand');if(sb)sb.value='';
+  fillSalSel();
+  var wrap=document.getElementById('sal-serial-wrap');if(wrap)wrap.style.display='none';
+  document.getElementById('sal-prev').style.display='none';
+  document.getElementById('sal-model-info').style.display='none';
+  var total=_salTotal();
+  var c=document.getElementById('sal-pay-rows');
+  if(c&&c.children.length===1){var inp=c.querySelector('input[type=number]');if(inp)inp.value=total;}
+  else initPayRows('sal',[{method:'نقدي',amount:total}],total);
+  _cPR('sal');
+}
+function _cPR(pfx){var c=document.getElementById(pfx+'-pay-rows');if(!c)return;var paid=Array.from(c.querySelectorAll('input[type=number]')).reduce(function(a,i){return a+(parseFloat(i.value)||0);},0);var exp=_gExp(pfx);var el=document.getElementById(pfx+'-pay-rem');if(!el)return;if(!exp){el.textContent='';return;}var rem=exp-paid;if(Math.abs(rem)<0.01)el.innerHTML='<span style="color:var(--su);">&#9989; مكتمل</span>';else if(rem>0)el.innerHTML='<span style="color:var(--wa);">متبقي: '+fmt(rem)+' ج</span>';else el.innerHTML='<span style="color:var(--re);">&#9888;&#65039; زيادة: '+fmt(-rem)+' ج</span>';}
+function getPayRows(pfx){var c=document.getElementById(pfx+'-pay-rows');return Array.from(c.children).map(function(r){var s=r.querySelector('select'),i=r.querySelector('input[type=number]');return{method:s?s.value:'نقدي',amount:parseFloat(i?i.value:0)||0};}).filter(function(r){return r.amount>0;});}
+function addPurchase(){
+  if(!_purItems.length){toast('&#9888;&#65039; ضيف موبايل واحد على الأقل للقائمة!','var(--wa)');return;}
   var supplier=document.getElementById('pur-sup').value.trim();
   var date=document.getElementById('pur-date').value||today();
   var notes=document.getElementById('pur-notes').value;
-  var serialsRaw=(document.getElementById('pur-serials')||{value:''}).value;
-  var serials=serialsRaw.split('\n').map(function(l){return l.trim();}).filter(function(l){return l.length>0;});
-  if(!model||!qty||!unitPrice){toast('&#9888;&#65039; ملأ الموديل والكمية والسعر!','var(--wa)');return;}
   var pmts=getPayRows('pur');
   if(!pmts.length){toast('&#9888;&#65039; ضيف طريقة دفع واحدة على الأقل!','var(--wa)');return;}
+  var total=_purTotal();
   var pmtTotal=pmts.reduce(function(a,p){return a+p.amount;},0);
-  if(Math.abs(pmtTotal-unitPrice*qty)>0.01){toast('&#9888;&#65039; مجموع طرق الدفع ('+fmt(pmtTotal)+') مش بيساوي إجمالي الشراء ('+fmt(unitPrice*qty)+')!','var(--wa)');return;}
+  if(Math.abs(pmtTotal-total)>0.01){toast('&#9888;&#65039; مجموع طرق الدفع ('+fmt(pmtTotal)+') مش بيساوي إجمالي الشراء ('+fmt(total)+')!','var(--wa)');return;}
   var payment=pmts.length===1?pmts[0].method:'مختلط';
-  D.purchases.unshift({id:Date.now(),date:date,brand:brand,model:model,qty:qty,unitPrice:unitPrice,supplier:supplier,payment:payment,payments:pmts,notes:notes,serials:serials});
-  if(!D.stock[model]) D.stock[model]={brand:brand,qty:0,avgCost:0,serials:[]};
-  var s=D.stock[model];
-  s.avgCost=((s.avgCost*s.qty)+(unitPrice*qty))/(s.qty+qty);
-  s.qty+=qty; s.brand=brand||s.brand;
-  if(!s.serials) s.serials=[];
-  serials.forEach(function(sr){if(s.serials.indexOf(sr)<0)s.serials.push(sr);});
-  var _purAj=ajalAmt({payments:pmts},unitPrice*qty);
-  save(); toast('&#9989; تم تسجيل الشراء'+(serials.length?' مع '+serials.length+' سيريال!':'!')); refreshModelsDL(); renderPur();
+  var totalQty=_purItems.reduce(function(a,i){return a+i.qty;},0);
+  var rec;
+  if(_purItems.length===1){
+    var pi=_purItems[0];
+    rec={id:Date.now(),date:date,brand:pi.brand,model:pi.model,qty:pi.qty,unitPrice:pi.unitPrice,supplier:supplier,payment:payment,payments:pmts,notes:notes,serials:pi.serials,items:null};
+  } else {
+    rec={id:Date.now(),date:date,brand:'متعدد',model:'متعدد ('+_purItems.length+' موديل)',qty:totalQty,unitPrice:total/totalQty,supplier:supplier,payment:payment,payments:pmts,notes:notes,serials:[],items:_purItems.slice()};
+  }
+  D.purchases.unshift(rec);
+  var itemsList=rec.items||[{brand:rec.brand,model:rec.model,qty:rec.qty,unitPrice:rec.unitPrice,serials:rec.serials||[]}];
+  itemsList.forEach(function(item){
+    if(!D.stock[item.model]) D.stock[item.model]={brand:item.brand||'',qty:0,avgCost:0,serials:[]};
+    var s=D.stock[item.model];
+    s.avgCost=((s.avgCost*s.qty)+(item.unitPrice*item.qty))/(s.qty+item.qty);
+    s.qty+=item.qty; s.brand=item.brand||s.brand;
+    if(!s.serials) s.serials=[];
+    (item.serials||[]).forEach(function(sr){if(s.serials.indexOf(sr)<0)s.serials.push(sr);});
+  });
+  var _purAj=ajalAmt({payments:pmts},total);
+  var totalSerials=_purItems.reduce(function(a,i){return a+(i.serials||[]).length;},0);
+  _purItems=[];
+  renderPurItems();
+  save(); toast('&#9989; تم تسجيل الشراء'+(totalSerials?' مع '+totalSerials+' سيريال!':'!')); refreshModelsDL(); renderPur();
   if(_purAj>0) setTimeout(function(){toast('&#9203; '+fmt(_purAj)+' ج آجل — تمت إضافتها لديون المورد'+(supplier?' '+supplier:''),'var(--wa)');},2700);
   ['pur-qty','pur-price','pur-notes','pur-sup','pur-model'].forEach(function(id){document.getElementById(id).value='';});
   setBrand('pur-brand','pur-brand-custom','');
@@ -1159,10 +1345,24 @@ function renderPur(){
   var tb=document.getElementById('pur-tb');
   if(!D.purchases.length){tb.innerHTML='<tr><td colspan="8"><div class="es"><span class="em">&#128717;</span>لا توجد مشتريات</div></td></tr>';return;}
   var thead=tb.closest('table').querySelector('thead tr');
-  thead.innerHTML='<th>التاريخ</th><th>الموبايل</th><th>المورد</th><th>الكمية</th><th>سعر الوحدة</th><th>الإجمالي</th><th>الدفع</th><th class="hm">السيريالات</th><th class="hm">متوسط التكلفة</th><th></th>';
+  thead.innerHTML='<th>التاريخ</th><th>الموبايل</th><th>المورد</th><th>الكمية</th><th>الإجمالي</th><th>الدفع</th><th class="hm">السيريالات</th><th class="hm">متوسط التكلفة</th><th></th>';
   tb.innerHTML=D.purchases.map(function(p){
-    var sers=(p.serials&&p.serials.length)?p.serials.map(function(sr){return '<span style="font-family:monospace;font-size:10px;background:var(--sf3);padding:1px 6px;border-radius:4px;display:inline-block;margin:1px;">'+sr+'</span>';}).join(' '):'<span style="color:var(--mu);font-size:11px;">—</span>';
-    return '<tr><td>'+p.date+'</td><td><b>'+p.model+'</b>'+(p.brand?' <span class="badge bbl">'+p.brand+'</span>':'')+'</td><td>'+(p.supplier?'<span class="badge bpu2">&#127981; '+p.supplier+'</span>':'—')+'</td><td>'+p.qty+'</td><td>'+fmt(p.unitPrice)+' ج</td><td><b>'+fmt(p.unitPrice*p.qty)+' ج</b></td><td>'+pmtDisplay(p,p.unitPrice*p.qty)+'</td><td class="hm" style="max-width:180px;">'+sers+'</td><td class="hm pos">'+(D.stock[p.model]?fmt(D.stock[p.model].avgCost)+' ج':'—')+'</td><td style="white-space:nowrap;"><button class="btn bw bsm" onclick="editPur(\''+p.id+'\')" style="margin-left:4px;">&#9999;&#65039;</button><button class="btn bpu bsm" onclick="openInv(\'pur\',\''+p.id+'\')" title="فاتورة">&#129534;</button></td></tr>';
+    var total=p.items&&p.items.length?p.items.reduce(function(a,i){return a+i.qty*i.unitPrice;},0):p.unitPrice*p.qty;
+    var modelCell;
+    if(p.items&&p.items.length>1){
+      modelCell='<b style="color:var(--ac);">'+p.items.length+' موديل</b><br>'+p.items.map(function(i){return '<span class="badge bbl" style="font-size:10px;margin:1px;">'+i.model+' &times;'+i.qty+'</span>';}).join(' ');
+    } else {
+      modelCell='<b>'+p.model+'</b>'+(p.brand&&p.brand!=='متعدد'?' <span class="badge bbl">'+p.brand+'</span>':'');
+    }
+    var allSers=p.items&&p.items.length?p.items.reduce(function(a,i){return a.concat(i.serials||[]);}, []):(p.serials||[]);
+    var sers=allSers.length?allSers.map(function(sr){return '<span style="font-family:monospace;font-size:10px;background:var(--sf3);padding:1px 6px;border-radius:4px;display:inline-block;margin:1px;">'+sr+'</span>';}).join(' '):'<span style="color:var(--mu);font-size:11px;">—</span>';
+    var avgCell;
+    if(p.items&&p.items.length>1){
+      avgCell=p.items.map(function(i){return '<small>'+i.model+': '+(D.stock[i.model]?fmt(D.stock[i.model].avgCost)+' ج':'—')+'</small>';}).join('<br>');
+    } else {
+      avgCell=(D.stock[p.model]?fmt(D.stock[p.model].avgCost)+' ج':'—');
+    }
+    return '<tr><td>'+p.date+'</td><td>'+modelCell+'</td><td>'+(p.supplier?'<span class="badge bpu2">&#127981; '+p.supplier+'</span>':'—')+'</td><td>'+p.qty+'</td><td><b>'+fmt(total)+' ج</b></td><td>'+pmtDisplay(p,total)+'</td><td class="hm" style="max-width:180px;">'+sers+'</td><td class="hm pos">'+avgCell+'</td><td style="white-space:nowrap;"><button class="btn bw bsm" onclick="editPur(\''+p.id+'\')" style="margin-left:4px;">&#9999;&#65039;</button><button class="btn bpu bsm" onclick="openInv(\'pur\',\''+p.id+'\')" title="فاتورة">&#129534;</button></td></tr>';
   }).join('');
 }
 function fillSalSel(){
@@ -1199,18 +1399,18 @@ function salModelInfo(model){
   var el=document.getElementById('sal-model-info');
   if(!el) return;
   if(!model){el.style.display='none';return;}
-  var purHist=D.purchases.filter(function(p){return p.model===model;});
-  var salHist=D.sales.filter(function(s){return s.model===model;});
+  var purHist=_getPurItemsForModel(model);
+  var salHist=_getSalItemsForModel(model);
   if(!purHist.length&&!salHist.length){el.style.display='none';return;}
   var lines=[];
   if(purHist.length){
     var avgBuy=purHist.reduce(function(a,p){return a+p.unitPrice*p.qty;},0)/purHist.reduce(function(a,p){return a+p.qty;},0);
-    var lastBuy=purHist.sort(function(a,b){return b.date.localeCompare(a.date);})[0].unitPrice;
+    var lastBuy=purHist.slice().sort(function(a,b){return b.date.localeCompare(a.date);})[0].unitPrice;
     lines.push('&#128717; <b>شراء:</b> متوسط <b style="color:var(--ac)">'+fmt(avgBuy)+' ج</b> | آخر سعر <b style="color:var(--ac2)">'+fmt(lastBuy)+' ج</b>');
   }
   if(salHist.length){
     var avgSel=salHist.reduce(function(a,s){return a+s.salePrice*s.qty;},0)/salHist.reduce(function(a,s){return a+s.qty;},0);
-    var lastSel=salHist.sort(function(a,b){return b.date.localeCompare(a.date);})[0].salePrice;
+    var lastSel=salHist.slice().sort(function(a,b){return b.date.localeCompare(a.date);})[0].salePrice;
     lines.push('&#128176; <b>بيع:</b> متوسط <b style="color:var(--su)">'+fmt(avgSel)+' ج</b> | آخر سعر <b style="color:var(--ac2)">'+fmt(lastSel)+' ج</b>');
   }
   el.innerHTML=lines.join('<br>');
@@ -1221,40 +1421,52 @@ function salPrev(){
   var qty=parseInt(document.getElementById('sal-qty').value)||0;
   var sp=parseFloat(document.getElementById('sal-price').value)||0;
   var el=document.getElementById('sal-prev');
-  // Auto-update single payment row with total
-  var total=qty*sp;
-  var c=document.getElementById('sal-pay-rows');
-  if(c&&c.children.length===1&&total>0){var inp=c.querySelector('input[type=number]');if(inp)inp.value=total;}
-  _cPR('sal');
-  if(!model||!qty||!sp){el.style.display='none';_cPR('sal');return;}
-  var s=D.stock[model]; if(!s){el.style.display='none';_cPR('sal');return;}
+  // Only auto-update payment row when no items in cart yet
+  if(!_salItems.length){
+    var itemTotal=qty*sp;
+    var c=document.getElementById('sal-pay-rows');
+    if(c&&c.children.length===1&&itemTotal>0){var inp=c.querySelector('input[type=number]');if(inp)inp.value=itemTotal;}
+    _cPR('sal');
+  }
+  if(!model||!qty||!sp){el.style.display='none';return;}
+  var s=D.stock[model]; if(!s){el.style.display='none';return;}
   var cost=s.avgCost*qty,rev=sp*qty,profit=rev-cost,margin=rev>0?((profit/rev)*100).toFixed(1):0;
   el.innerHTML='&#128161; تكلفة: '+fmt(cost)+' ج | إيراد: '+fmt(rev)+' ج | <b>ربح: <span style="color:'+(profit>=0?'var(--su)':'var(--re)')+'">'+fmt(profit)+' ج ('+margin+'%)</span></b>';
-  el.style.display='block'; _cPR('sal');
+  el.style.display='block';
 }
 function addSale(){
-  var model=document.getElementById('sal-prod').value;
-  var qty=parseInt(document.getElementById('sal-qty').value);
-  var salePrice=parseFloat(document.getElementById('sal-price').value);
+  if(!_salItems.length){toast('&#9888;&#65039; ضيف موبايل واحد على الأقل للقائمة!','var(--wa)');return;}
   var customer=document.getElementById('sal-cust').value.trim();
   var date=document.getElementById('sal-date').value||today();
-  var boxes=document.getElementById('sal-serial-boxes');
-  var checkedSerials=boxes?Array.from(boxes.querySelectorAll('input[type=checkbox]:checked')).map(function(c){return c.value;})  :[];
-  if(!model||!qty||!salePrice){toast('&#9888;&#65039; ملأ بيانات البيعة!','var(--wa)');return;}
-  var s=D.stock[model];
-  if(!s||s.qty<qty){toast('&#9888;&#65039; مفيش كمية كافية! متاح: '+(s?s.qty:0),'var(--wa)');return;}
-  if(checkedSerials.length>0&&checkedSerials.length!==qty){toast('&#9888;&#65039; عدد السيريالات ('+checkedSerials.length+') مش بيطابق الكمية ('+qty+')!','var(--wa)');return;}
   var pmts=getPayRows('sal');
   if(!pmts.length){toast('&#9888;&#65039; ضيف طريقة دفع واحدة على الأقل!','var(--wa)');return;}
+  var total=_salTotal();
   var pmtTotal=pmts.reduce(function(a,p){return a+p.amount;},0);
-  if(Math.abs(pmtTotal-salePrice*qty)>0.01){toast('&#9888;&#65039; مجموع طرق الدفع ('+fmt(pmtTotal)+') مش بيساوي إجمالي البيعة ('+fmt(salePrice*qty)+')!','var(--wa)');return;}
+  if(Math.abs(pmtTotal-total)>0.01){toast('&#9888;&#65039; مجموع طرق الدفع ('+fmt(pmtTotal)+') مش بيساوي إجمالي البيعة ('+fmt(total)+')!','var(--wa)');return;}
   var payment=pmts.length===1?pmts[0].method:'مختلط';
-  D.sales.unshift({id:Date.now(),date:date,model:model,qty:qty,salePrice:salePrice,costPerUnit:s.avgCost,customer:customer,payment:payment,payments:pmts,serials:checkedSerials});
-  s.qty-=qty;
-  if(checkedSerials.length>0&&s.serials){s.serials=s.serials.filter(function(sr){return checkedSerials.indexOf(sr)<0;});}
-  if(s.qty===0) s.avgCost=0;
-  var _salAj=ajalAmt({payments:pmts},salePrice*qty);
-  save(); toast('&#9989; تم تسجيل البيعة!'+(checkedSerials.length?' ('+checkedSerials.length+' سيريال)':''));
+  var totalQty=_salItems.reduce(function(a,i){return a+i.qty;},0);
+  var totalCost=_salItems.reduce(function(a,i){return a+i.costPerUnit*i.qty;},0);
+  var rec;
+  if(_salItems.length===1){
+    var si=_salItems[0];
+    rec={id:Date.now(),date:date,model:si.model,qty:si.qty,salePrice:si.salePrice,costPerUnit:si.costPerUnit,customer:customer,payment:payment,payments:pmts,serials:si.serials,items:null};
+  } else {
+    rec={id:Date.now(),date:date,model:'متعدد ('+_salItems.length+' موديل)',qty:totalQty,salePrice:total/totalQty,costPerUnit:totalCost/totalQty,customer:customer,payment:payment,payments:pmts,serials:[],items:_salItems.slice()};
+  }
+  D.sales.unshift(rec);
+  var itemsList=rec.items||[{model:rec.model,qty:rec.qty,serials:rec.serials||[]}];
+  itemsList.forEach(function(item){
+    var s=D.stock[item.model];
+    if(s){
+      s.qty-=item.qty;
+      if(item.serials&&item.serials.length&&s.serials){s.serials=s.serials.filter(function(sr){return item.serials.indexOf(sr)<0;});}
+      if(s.qty===0) s.avgCost=0;
+    }
+  });
+  var _salAj=ajalAmt({payments:pmts},total);
+  _salItems=[];
+  renderSalItems();
+  save(); toast('&#9989; تم تسجيل البيعة!');
   if(_salAj>0) setTimeout(function(){toast('&#9203; '+fmt(_salAj)+' ج آجل — تمت إضافتها لديون العميل'+(customer?' '+customer:''),'var(--wa)');},2700);
   var sb=document.getElementById('sal-brand');if(sb)sb.value='';
   fillSalSel(); renderSal();
@@ -1269,18 +1481,27 @@ function renderSal(){
   var tb=document.getElementById('sal-tb');
   if(!D.sales.length){tb.innerHTML='<tr><td colspan="8"><div class="es"><span class="em">&#128176;</span>لا توجد مبيعات</div></td></tr>';return;}
   var thead=tb.closest('table').querySelector('thead tr');
-  thead.innerHTML='<th>التاريخ</th><th>الموبايل</th><th class="hm">السيريالات</th><th>التاجر/العميل</th><th>الكمية</th><th>سعر البيع</th><th class="hm">التكلفة</th><th>الربح</th><th>الدفع</th><th></th>';
+  thead.innerHTML='<th>التاريخ</th><th>الموبايل</th><th class="hm">السيريالات</th><th>التاجر/العميل</th><th>الكمية</th><th>إجمالي البيع</th><th>الربح</th><th>الدفع</th><th></th>';
   tb.innerHTML=D.sales.map(function(s){
-    var cost=s.costPerUnit*s.qty,rev=s.salePrice*s.qty,profit=rev-cost;
-    var sers=s.serials&&s.serials.length
-      ?s.serials.map(function(sr){return '<span style="font-family:monospace;font-size:10px;background:var(--sf3);padding:2px 7px;border-radius:4px;display:inline-block;margin:1px;">'+sr+'</span>';}).join(' ')
+    var rev=s.items&&s.items.length?s.items.reduce(function(a,i){return a+i.qty*i.salePrice;},0):s.salePrice*s.qty;
+    var cost=s.items&&s.items.length?s.items.reduce(function(a,i){return a+i.qty*i.costPerUnit;},0):s.costPerUnit*s.qty;
+    var profit=rev-cost;
+    var modelCell;
+    if(s.items&&s.items.length>1){
+      modelCell='<b style="color:var(--ac);">'+s.items.length+' موديل</b><br>'+s.items.map(function(i){return '<span class="badge bbl" style="font-size:10px;margin:1px;">'+i.model+' &times;'+i.qty+'</span>';}).join(' ');
+    } else {
+      modelCell='<b>'+s.model+'</b>';
+    }
+    var allSers=s.items&&s.items.length?s.items.reduce(function(a,i){return a.concat(i.serials||[]);}, []):(s.serials||[]);
+    var sers=allSers.length
+      ?allSers.map(function(sr){return '<span style="font-family:monospace;font-size:10px;background:var(--sf3);padding:2px 7px;border-radius:4px;display:inline-block;margin:1px;">'+sr+'</span>';}).join(' ')
       :'<span style="color:var(--mu);">—</span>';
-    return '<tr><td>'+s.date+'</td><td><b>'+s.model+'</b></td>'
+    return '<tr><td>'+s.date+'</td><td>'+modelCell+'</td>'
       +'<td class="hm" style="max-width:160px;">'+sers+'</td>'
       +'<td>'+(s.customer?'<span class="badge bor">&#128100; '+s.customer+'</span>':'—')+'</td>'
-      +'<td>'+s.qty+'</td><td>'+fmt(s.salePrice)+' ج</td><td class="hm">'+fmt(s.costPerUnit)+' ج</td>'
+      +'<td>'+s.qty+'</td><td><b>'+fmt(rev)+' ج</b></td>'
       +'<td class="'+(profit>=0?'pos':'neg')+'">'+fmt(profit)+' ج</td>'
-      +'<td>'+pmtDisplay(s,s.salePrice*s.qty)+'</td>'
+      +'<td>'+pmtDisplay(s,rev)+'</td>'
       +'<td style="white-space:nowrap;"><button class="btn bw bsm" onclick="editSal(\''+s.id+'\')" style="margin-left:4px;">&#9999;&#65039;</button><button class="btn bpu bsm" onclick="openInv(\'sal\',\''+s.id+'\')" title="فاتورة">&#129534;</button></td></tr>';
   }).join('');
 }
@@ -1321,8 +1542,11 @@ function renderStock(){
   // model -> suppliers map
   var modelSups={};
   D.purchases.forEach(function(p){
-    if(!modelSups[p.model]) modelSups[p.model]=[];
-    if(p.supplier && modelSups[p.model].indexOf(p.supplier)<0) modelSups[p.model].push(p.supplier);
+    var models=(p.items&&p.items.length)?p.items.map(function(i){return i.model;}):[p.model];
+    models.forEach(function(m){
+      if(!modelSups[m]) modelSups[m]=[];
+      if(p.supplier&&modelSups[m].indexOf(p.supplier)<0) modelSups[m].push(p.supplier);
+    });
   });
 
   // Filter individual models
@@ -1656,8 +1880,7 @@ function openInv(type,id){
   var r=type==='sal'?D.sales.find(function(s){return s.id==id;}):D.purchases.find(function(p){return p.id==id;});
   if(!r){toast('&#9888;&#65039; السجل غير موجود!','var(--wa)');return;}
   var isSale=type==='sal';
-  var total=isSale?r.salePrice*r.qty:r.unitPrice*r.qty;
-  var price=isSale?r.salePrice:r.unitPrice;
+  var total=r.items&&r.items.length?(isSale?r.items.reduce(function(a,i){return a+i.qty*i.salePrice;},0):r.items.reduce(function(a,i){return a+i.qty*i.unitPrice;},0)):(isSale?r.salePrice*r.qty:r.unitPrice*r.qty);
   var party=isSale?(r.customer||'—'):(r.supplier||'—');
   var shopName=D.settings.shopName||'موبيل برو';
   var invNum='INV-'+String(r.id).slice(-6);
@@ -1669,25 +1892,31 @@ function openInv(type,id){
   document.getElementById('inv-bal').style.display='none';
   document.getElementById('inv-bal').innerHTML='';
   var pmts=recPmts(r,total);
-  // Payment rows
   var pmtBody='';
-  if(pmts.length>1){
-    pmtBody=pmts.map(function(pm){return '<div class="itr"><span>'+pm.method+'</span><span>'+fmt(pm.amount)+' ج</span></div>';}).join('');
-  }
+  if(pmts.length>1){pmtBody=pmts.map(function(pm){return '<div class="itr"><span>'+pm.method+'</span><span>'+fmt(pm.amount)+' ج</span></div>';}).join('');}
   var totalsHtml=pmtBody+'<div class="itr tot"><span>الإجمالي</span><span><b>'+fmt(total)+' ج</b></span></div>';
-  // Serials
+  // Build invoice table rows — one per model
+  var invItems=r.items&&r.items.length?r.items:[{model:r.model,brand:r.brand,qty:r.qty,unitPrice:isSale?null:r.unitPrice,salePrice:isSale?r.salePrice:null,serials:r.serials||[]}];
+  var hasBrand=invItems.some(function(i){return i.brand&&i.brand!=='متعدد';});
+  var tableRows=invItems.map(function(item){
+    var p=isSale?item.salePrice:item.unitPrice;
+    var sub=p*item.qty;
+    return '<tr><td><b>'+item.model+'</b></td>'+(hasBrand?'<td><span style="background:#e0f2fe;color:#0369a1;padding:2px 8px;border-radius:4px;font-size:12px;">'+(item.brand||'—')+'</span></td>':'')+'<td>'+item.qty+' وحدة</td><td>'+fmt(p)+' ج</td><td><b>'+fmt(sub)+' ج</b></td></tr>';
+  }).join('');
+  // All serials grouped
+  var allSers=invItems.reduce(function(a,i){return a.concat(i.serials||[]);}, []);
   var sersHtml='';
-  if(r.serials&&r.serials.length){
+  if(allSers.length){
     sersHtml='<div style="margin-bottom:18px;"><div style="font-size:11px;font-weight:700;color:#64748b;text-transform:uppercase;letter-spacing:.5px;margin-bottom:7px;">السيريالات / IMEI</div>'
-      +r.serials.map(function(sr){return '<span style="font-family:monospace;font-size:11px;background:#f1f5f9;border:1px solid #e2e8f0;padding:3px 8px;border-radius:5px;display:inline-block;margin:2px;">'+sr+'</span>';}).join(' ')+'</div>';
+      +allSers.map(function(sr){return '<span style="font-family:monospace;font-size:11px;background:#f1f5f9;border:1px solid #e2e8f0;padding:3px 8px;border-radius:5px;display:inline-block;margin:2px;">'+sr+'</span>';}).join(' ')+'</div>';
   }
   document.getElementById('inv-body').innerHTML=
     '<div class="ih">'
     +'<div class="ibr"><div style="display:flex;align-items:center;gap:12px;margin-bottom:6px;"><svg viewBox="0 0 64 64" width="40" height="40" style="flex-shrink:0;"><rect x="13" y="5" width="38" height="54" rx="8" fill="none" stroke="#0a0e1a" stroke-width="3"/><rect x="28" y="9.5" width="8" height="2" rx="1" fill="#0a0e1a" opacity="0.5"/><rect x="19" y="39" width="5.5" height="12" rx="1.2" fill="#0a0e1a" opacity="0.45"/><rect x="26.5" y="32" width="5.5" height="19" rx="1.2" fill="#0a0e1a" opacity="0.65"/><rect x="34" y="24" width="5.5" height="27" rx="1.2" fill="#0a0e1a" opacity="0.82"/><rect x="41.5" y="16" width="5.5" height="35" rx="1.2" fill="#0a0e1a"/></svg><span style="font-family:Inter,-apple-system,sans-serif;font-weight:800;font-size:22px;letter-spacing:-0.03em;color:#0a0e1a;line-height:1;">'+shopName+'</span></div><p style="margin-top:3px;font-size:12px;color:#64748b;">نظام إدارة بزنس الموبايلات</p><p style="margin-top:4px;font-size:12px;color:#64748b;">'+r.date+'</p></div>'
     +'<div class="ino"><div class="lbl">'+(isSale?'فاتورة بيع':'فاتورة شراء')+'</div><div class="val">'+invNum+'</div><div class="dt2">'+r.date+'</div></div></div>'
     +'<div class="ito"><div class="lbl">'+(isSale?'العميل':'المورد')+'</div><h3>'+(party==='—'?'غير محدد':party)+'</h3></div>'
-    +'<table class="itb"><thead><tr><th>الموديل</th>'+(r.brand?'<th>الماركة</th>':'')+'<th>الكمية</th><th>سعر الوحدة</th><th>الإجمالي</th></tr></thead>'
-    +'<tbody><tr><td><b>'+r.model+'</b></td>'+(r.brand?'<td><span style="background:#e0f2fe;color:#0369a1;padding:2px 8px;border-radius:4px;font-size:12px;">'+r.brand+'</span></td>':'')+'<td>'+r.qty+' وحدة</td><td>'+fmt(price)+' ج</td><td><b>'+fmt(total)+' ج</b></td></tr></tbody></table>'
+    +'<table class="itb"><thead><tr><th>الموديل</th>'+(hasBrand?'<th>الماركة</th>':'')+'<th>الكمية</th><th>سعر الوحدة</th><th>الإجمالي</th></tr></thead>'
+    +'<tbody>'+tableRows+'</tbody></table>'
     +sersHtml
     +'<div class="itots">'+totalsHtml+'</div>'
     +'<div class="ifoot"><p>هذه الفاتورة صادرة من نظام '+shopName+' | جميع المبالغ بالجنيه المصري</p><p style="margin-top:4px;">'+r.date+'</p></div>';
@@ -1699,15 +1928,19 @@ function invPrint(){
   var isNative=window.Capacitor&&Capacitor.isNativePlatform&&Capacitor.isNativePlatform();
   if(isNative&&navigator.share){
     var r=_inv.r,isSale=_inv.isSale,total=_inv.total;
-    var price=isSale?r.salePrice:r.unitPrice;
     var shopName=D.settings.shopName||'موبيل برو';
     var lines=[shopName,''];
     lines.push(isSale?'فاتورة بيع':'فاتورة شراء');
     lines.push((isSale?'العميل: ':'المورد: ')+(_inv.party==='—'?'غير محدد':_inv.party));
     lines.push('التاريخ: '+r.date);
     lines.push('─────────────');
-    lines.push(r.model+(r.brand?' ('+r.brand+')':'')+' × '+r.qty+' وحدة');
-    lines.push('سعر الوحدة: '+fmt(price)+' ج');
+    var invItems=r.items&&r.items.length?r.items:[{model:r.model,brand:r.brand,qty:r.qty,unitPrice:isSale?null:r.unitPrice,salePrice:isSale?r.salePrice:null,serials:r.serials||[]}];
+    invItems.forEach(function(item){
+      var p=isSale?item.salePrice:item.unitPrice;
+      lines.push(item.model+(item.brand&&item.brand!=='متعدد'?' ('+item.brand+')':'')+' × '+item.qty+' وحدة');
+      lines.push('سعر الوحدة: '+fmt(p)+' ج  |  إجمالي: '+fmt(p*item.qty)+' ج');
+      if(item.serials&&item.serials.length) lines.push('السيريالات: '+item.serials.join(', '));
+    });
     var pmts=recPmts(r,total);
     if(pmts.length>1){
       lines.push('طرق الدفع:');
@@ -1715,7 +1948,6 @@ function invPrint(){
     } else {
       lines.push('طريقة الدفع: '+pmts[0].method);
     }
-    if(r.serials&&r.serials.length) lines.push('السيريالات: '+r.serials.join(', '));
     lines.push('─────────────');
     lines.push('الإجمالي: '+fmt(total)+' ج');
     var prevAmt=parseFloat(document.getElementById('inv-prev-amt').value)||0;
